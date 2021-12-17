@@ -1,41 +1,108 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
+import {
+  selectUser,
+  setSignOutState,
+  setUserLoginDetails,
+} from "../slice/user-slice";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { auth } from "../firebaseinit";
+
 interface Props {}
 
 const Header = (props: Props) => {
+  const user = useAppSelector(selectUser);
+  const dispatch = useAppDispatch();
+  const provider = new GoogleAuthProvider();
+
+  const handleAuth = () => {
+    if (!user.name) {
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          const user = result.user;
+          setUser({
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+          });
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          console.log(errorCode);
+
+          const errorMessage = error.message;
+          console.log(errorMessage);
+        });
+    } else if (user.name) {
+      signOut(auth)
+        .then(() => {
+          dispatch(setSignOutState());
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    }
+  };
+
+  const setUser = (user: {
+    displayName: string | null;
+    email: string | null;
+    photoURL: string | null;
+  }) => {
+    dispatch(
+      setUserLoginDetails({
+        name: user.displayName,
+        email: user.email,
+        photo: user.photoURL,
+      })
+    );
+  };
   return (
     <>
       <Nav>
         <Logo>
           <img src="/images/logo.svg" alt="Disney+" />
         </Logo>
-        <NavMenu>
-          <a href="/home">
-            <img src="/images/home-icon.svg" alt="HOME" />
-            <span>HOME</span>
-          </a>
-          <a>
-            <img src="/images/search-icon.svg" alt="SEARCH" />
-            <span>SEARCH</span>
-          </a>
-          <a>
-            <img src="/images/watchlist-icon.svg" alt="WATCHLIST" />
-            <span>WATCHLIST</span>
-          </a>
-          <a>
-            <img src="/images/original-icon.svg" alt="ORIGINALS" />
-            <span>ORIGINALS</span>
-          </a>
-          <a>
-            <img src="/images/movie-icon.svg" alt="MOVIES" />
-            <span>MOVIES</span>
-          </a>
-          <a>
-            <img src="/images/series-icon.svg" alt="SERIES" />
-            <span>SERIES</span>
-          </a>
-        </NavMenu>
+
+        {!user.name && <Login onClick={handleAuth}>Login</Login>}
+        {user.name && (
+          <>
+            <NavMenu>
+              <a href="/home">
+                <img src="/images/home-icon.svg" alt="HOME" />
+                <span>HOME</span>
+              </a>
+              <a>
+                <img src="/images/search-icon.svg" alt="SEARCH" />
+                <span>SEARCH</span>
+              </a>
+              <a>
+                <img src="/images/watchlist-icon.svg" alt="WATCHLIST" />
+                <span>WATCHLIST</span>
+              </a>
+              <a>
+                <img src="/images/original-icon.svg" alt="ORIGINALS" />
+                <span>ORIGINALS</span>
+              </a>
+              <a>
+                <img src="/images/movie-icon.svg" alt="MOVIES" />
+                <span>MOVIES</span>
+              </a>
+              <a>
+                <img src="/images/series-icon.svg" alt="SERIES" />
+                <span>SERIES</span>
+              </a>
+            </NavMenu>
+            <SignOut>
+              <UserImg src={user.photo?.toString()} alt={user.name} />
+              <DropDown>
+                <span onClick={handleAuth}>Sign out</span>
+              </DropDown>
+            </SignOut>
+          </>
+        )}
       </Nav>
 
       <Outlet />
@@ -139,6 +206,7 @@ const Login = styled.a`
   border: 1px solid #f9f9f9;
   border-radius: 4px;
   transition: all 0.2s ease 0s;
+  cursor: pointer;
   &:hover {
     background-color: #f9f9f9;
     color: #000;
