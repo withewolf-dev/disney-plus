@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import {
@@ -7,7 +7,14 @@ import {
   setUserLoginDetails,
 } from "../slice/user-slice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithPopup,
+  signOut,
+} from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+
 import { auth } from "../firebaseinit";
 
 interface Props {}
@@ -16,6 +23,19 @@ const Header = (props: Props) => {
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const provider = new GoogleAuthProvider();
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate(`/home`);
+        setUser(user);
+      } else {
+        navigate(`/`);
+      }
+    });
+  }, [user.name]);
 
   const handleAuth = () => {
     if (!user.name) {
@@ -39,6 +59,7 @@ const Header = (props: Props) => {
       signOut(auth)
         .then(() => {
           dispatch(setSignOutState());
+          navigate(`/`);
         })
         .catch((error) => {
           alert(error.message);
