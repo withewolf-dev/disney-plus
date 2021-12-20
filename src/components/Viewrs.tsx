@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-
 interface Props {}
 
 const Viewrs = (props: Props) => {
@@ -12,6 +11,7 @@ const Viewrs = (props: Props) => {
           <source src="/videos/1564674844-disney.mp4" type="video/mp4" />
         </video>
       </Wrap>
+
       <Wrap>
         <img src="/images/viewers-pixar.png" alt="" />
         <video autoPlay={true} loop={true} playsInline={true}>
@@ -43,18 +43,6 @@ const Viewrs = (props: Props) => {
   );
 };
 
-const Container = styled.div`
-  margin-top: 30px;
-  padding: 30px 0px 26px;
-  display: grid;
-  grid-gap: 25px;
-  gap: 25px;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-  }
-`;
-
 const Wrap = styled.div`
   padding-top: 56.25%;
   border-radius: 10px;
@@ -82,7 +70,7 @@ const Wrap = styled.div`
     height: 100%;
     position: absolute;
     top: 0px;
-    opacity: 1;
+    opacity: 0;
     z-index: 0;
   }
   &:hover {
@@ -93,6 +81,18 @@ const Wrap = styled.div`
     video {
       opacity: 1;
     }
+  }
+`;
+
+const Container = styled.div`
+  margin-top: 30px;
+  padding: 30px 0px 26px;
+  display: grid;
+  grid-gap: 25px;
+  gap: 25px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
   }
 `;
 export default Viewrs;

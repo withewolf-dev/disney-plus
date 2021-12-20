@@ -3,19 +3,19 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 interface Props {
-  recommends: any[];
+  original: any[];
 }
 
-const Recommends = ({ recommends }: Props) => {
+const Original = ({ original }: Props) => {
   return (
     <Container>
-      <h4>Recommended for you</h4>
+      <h4>Originals</h4>
       <Content>
-        {recommends &&
-          recommends.map((recommend) => (
-            <Wrap key={recommend.id}>
-              <Link to={`details/${recommend.id}`}>
-                <img src={recommend.cardImg} alt="image" />
+        {original &&
+          original.map((og) => (
+            <Wrap key={og.id}>
+              <Link to={`details/${og.id}`}>
+                <img src={og.cardImg} alt="image" />
               </Link>
             </Wrap>
           ))}
@@ -68,4 +68,4 @@ const Wrap = styled.div`
   }
 `;
 
-export default Recommends;
+export default Original;

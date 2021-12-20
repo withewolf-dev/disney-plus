@@ -1,54 +1,67 @@
 import { collection, getDocs } from "firebase/firestore";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import firestore from "../firebaseinit";
 import ImgSlider from "./ImgSlider";
+import NewDisney from "./newDisney";
+import Original from "./Original";
 import Recommends from "./Recommends";
+import Trending from "./trending";
 import Viewrs from "./Viewrs";
 
 interface Props {}
 
 const Home = (props: Props) => {
+  const [recommends, setrecommends] = useState<any[]>([]);
+  const [newDisney, setnewDisney] = useState<any[]>([]);
+  const [originals, setoriginals] = useState<any[]>([]);
+  const [trending, settrending] = useState<any[]>([]);
+
   useEffect(() => {
     getCinema();
   }, []);
 
-  let recommends: any[] = [];
-  let newDisneys: any[] = [];
-  let originals: any[] = [];
-  let trending: any[] = [];
-
   const getCinema = async () => {
     const cinemaCol = collection(firestore, "Cinema");
     const productSnapshot = await getDocs(cinemaCol);
+    var tempRecommends: any[] = [];
+    var tempNewDisney: any[] = [];
+    var tempOriginals: any[] = [];
+    var tempTrending: any[] = [];
+
     productSnapshot.docs.map((doc) => {
       switch (doc.data().type) {
         case "recommends":
-          recommends = [...recommends, { id: doc.id, ...doc.data() }];
+          tempRecommends.push({ id: doc.id, ...doc.data() });
           break;
 
         case "newDisney":
-          newDisneys = [...newDisneys, { id: doc.id, ...doc.data() }];
+          tempNewDisney.push({ id: doc.id, ...doc.data() });
           break;
 
         case "originals":
-          originals = [...originals, { id: doc.id, ...doc.data() }];
+          tempOriginals.push({ id: doc.id, ...doc.data() });
           break;
 
         case "trending":
-          trending = [...trending, { id: doc.id, ...doc.data() }];
+          tempTrending.push({ id: doc.id, ...doc.data() });
           break;
       }
     });
+    setrecommends(tempRecommends);
+    setoriginals(tempOriginals);
+    setnewDisney(tempNewDisney);
+    settrending(tempTrending);
   };
-
-  console.log(recommends);
 
   return (
     <Container>
       <ImgSlider />
       <Viewrs />
       <Recommends recommends={recommends} />
+      <NewDisney newDisney={newDisney} />
+      <Original original={originals} />
+      <Trending trending={trending} />
     </Container>
   );
 };
