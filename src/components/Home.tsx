@@ -1,15 +1,54 @@
-import React from "react";
+import { collection, getDocs } from "firebase/firestore";
+import React, { useEffect } from "react";
 import styled from "styled-components";
+import firestore from "../firebaseinit";
 import ImgSlider from "./ImgSlider";
+import Recommends from "./Recommends";
 import Viewrs from "./Viewrs";
 
 interface Props {}
 
 const Home = (props: Props) => {
+  useEffect(() => {
+    getCinema();
+  }, []);
+
+  let recommends: any[] = [];
+  let newDisneys: any[] = [];
+  let originals: any[] = [];
+  let trending: any[] = [];
+
+  const getCinema = async () => {
+    const cinemaCol = collection(firestore, "Cinema");
+    const productSnapshot = await getDocs(cinemaCol);
+    productSnapshot.docs.map((doc) => {
+      switch (doc.data().type) {
+        case "recommends":
+          recommends = [...recommends, { id: doc.id, ...doc.data() }];
+          break;
+
+        case "newDisney":
+          newDisneys = [...newDisneys, { id: doc.id, ...doc.data() }];
+          break;
+
+        case "originals":
+          originals = [...originals, { id: doc.id, ...doc.data() }];
+          break;
+
+        case "trending":
+          trending = [...trending, { id: doc.id, ...doc.data() }];
+          break;
+      }
+    });
+  };
+
+  console.log(recommends);
+
   return (
     <Container>
       <ImgSlider />
       <Viewrs />
+      <Recommends recommends={recommends} />
     </Container>
   );
 };

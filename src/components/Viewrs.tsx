@@ -82,7 +82,7 @@ const Wrap = styled.div`
     height: 100%;
     position: absolute;
     top: 0px;
-    opacity: 0;
+    opacity: 1;
     z-index: 0;
   }
   &:hover {
