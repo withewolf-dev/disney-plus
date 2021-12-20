@@ -14,7 +14,7 @@ const Recommends = ({ recommends }: Props) => {
         {recommends &&
           recommends.map((recommend) => (
             <Wrap key={recommend.id}>
-              <Link to={`details/${recommend.id}`}>
+              <Link to={`/details/${recommend.id}`}>
                 <img src={recommend.cardImg} alt="image" />
               </Link>
             </Wrap>

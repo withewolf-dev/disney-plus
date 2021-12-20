@@ -14,7 +14,7 @@ const Original = ({ original }: Props) => {
         {original &&
           original.map((og) => (
             <Wrap key={og.id}>
-              <Link to={`details/${og.id}`}>
+              <Link to={`/details/${og.id}`}>
                 <img src={og.cardImg} alt="image" />
               </Link>
             </Wrap>

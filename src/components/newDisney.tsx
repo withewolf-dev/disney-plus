@@ -14,7 +14,7 @@ const NewDisney = ({ newDisney }: Props) => {
         {newDisney &&
           newDisney.map((disney) => (
             <Wrap key={disney.id}>
-              <Link to={`details/${disney.id}`}>
+              <Link to={`/details/${disney.id}`}>
                 <img src={disney.cardImg} alt="image" />
               </Link>
             </Wrap>
